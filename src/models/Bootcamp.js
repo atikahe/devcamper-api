@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const geocoder = require('../utils/geocoder');
 
 const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 const emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
@@ -103,8 +104,31 @@ const BootcampSchema = new mongoose.Schema({
   }
 })
 
+// Generate slug
 BootcampSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+})
+
+// Generate geocode & location field
+BootcampSchema.pre('save', async function(next) {
+  const [loc] = await geocoder.geocode(this.address);
+
+  if (loc) {
+    this.location = {
+      type: 'Point',
+      coordinates: [loc.longitude, loc.latitude],
+      formattedAddress: loc.formattedAddress,
+      street: loc.streetName,
+      city: loc.city,
+      state: loc.stateCode,
+      zipcode: loc.zipcode,
+      country: loc.countryCode
+    }
+    // Do not save address in DB
+    this.address = undefined;
+  }
+
   next();
 })
 
