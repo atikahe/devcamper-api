@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 const emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
@@ -100,6 +101,11 @@ const BootcampSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+})
+
+BootcampSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
 })
 
 const Bootcamp = mongoose.model('Bootcamp', BootcampSchema);
