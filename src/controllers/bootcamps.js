@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const ErrorResponse = require('../utils/errorResponse');
 
 /**
  * @description Get all bootcamps
@@ -15,10 +16,7 @@ exports.getBootcamps = async (req, res, next) => {
       data: bootcamps
     })
   }catch (err){
-    res.status(400).json({
-      success: false,
-      msg: err.message
-    })
+    next(err);
   }
 }
 
@@ -32,7 +30,9 @@ exports.getBootcampById = async (req, res, next) => {
     const bootcamp = await Bootcamp.findOne({ _id: req.params.id });
 
     if (!bootcamp) {
-      throw new Error('Data not found');
+      return next(
+        new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      );
     }
 
     res.status(200).json({
@@ -42,10 +42,7 @@ exports.getBootcampById = async (req, res, next) => {
     })
     
   }catch (err){
-    res.status(400).json({
-      success: false,
-      msg: err.message
-    })
+    next(err);
   }
 }
 
@@ -63,10 +60,7 @@ exports.createBootcamp = async (req, res, next) => {
       data: bootcamp
     })
   }catch (err){
-    res.status(400).json({
-      success: false,
-      msg: err.message
-    })
+    next(err);
   }
 }
 
@@ -83,20 +77,18 @@ exports.updateBootcamp = async (req, res, next) => {
     });
 
     if (!bootcamp) {
-      throw new Error('Data not found')
+      return next(
+        new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      );
     }
 
     res.status(200).json({
       success: true,
       msg: `${bootcamp.name} data is updated!`,
       data: bootcamp
-    })
-
+    });
   } catch (err) {
-    res.status(400).json({
-      success: false,
-      msg: err.message
-    })
+    next(err);
   }
 }
 
@@ -109,18 +101,17 @@ exports.deleteBootcamp = async (req, res, next) => {
   try {
     const bootcamp = await Bootcamp.deleteOne({ _id: req.params.id });
 
-    if (!bootcamp) {
-      throw new Error('Data not found')
+    if (bootcamp.deletedCount < 1) {
+      return next(
+        new ErrorResponse(`Deletion failed, resource not found`, 400)
+      );
     }
 
     res.status(200).json({
       success: true,
-      msg: `${bootcamp.deletedCount} data is deleted`
-    })
+      msg: `Resource found, ${bootcamp.deletedCount} data is deleted`
+    });
   } catch (err) {
-    res.status(400).json({
-      success: false,
-      msg: err.message
-    })
+    next(err);
   }
 }
