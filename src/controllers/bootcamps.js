@@ -9,6 +9,11 @@ const asyncHandler = require('../middleware/async');
  */
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
   const bootcamps = await Bootcamp.find();
+  if (bootcamps.length < 1) {
+    return next(
+      new ErrorResponse(`Database empty`, 404)
+    )
+  }
   res.status(200).json({
     success: true,
     msg: `Showing all bootcamps`,
@@ -65,7 +70,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 400)
     );
   }
 
