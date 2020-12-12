@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node src/server",
-    "dev": "nodemon src/server"
+    "dev": "nodemon src/server",
+    "seeder:import": "node seeder -import",
+    "seeder:delete": "node seeder -delete"
   },
   "author": "Atikah",
   "license": "MIT",
