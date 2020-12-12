@@ -26,7 +26,7 @@ const importData = async (data) => {
   console.log('Import data starting..');
   await Bootcamp.create(data);
 
-  console.log('Data imported'.cyan);
+  console.log('Data imported'.cyan.inverse);
 }
 
 // Delete from DB
@@ -34,7 +34,7 @@ const deleteData = async () => {
   console.log('Delete data starting..');
   await Bootcamp.deleteMany();
 
-  console.log('Data deleted'.red);
+  console.log('Data destroyed'.red.inverse);
 }
 
 // Create cli arguments
