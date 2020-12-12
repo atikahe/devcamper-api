@@ -2,6 +2,7 @@ const Bootcamp = require('../models/Bootcamp');
 const ErrorResponse = require('../utils/errorResponse');
 const geocoder = require('../utils/geocoder');
 const asyncHandler = require('../middleware/async');
+const { parseQuery } = require('../utils/helpers');
 
 /**
  * @description Get all bootcamps
@@ -9,7 +10,49 @@ const asyncHandler = require('../middleware/async');
  * @access public
  */
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamps = await Bootcamp.find();
+  const { dbFilter, dbQuery } = parseQuery(req.query);
+
+  // TODO: Practice preventing NoSQL injection
+
+  // Initiate query builder with filter
+  let queryBuilder = Bootcamp.find(dbFilter);
+
+  if (dbQuery.select) {
+    const fields = dbQuery.select.split(',').join(' ');
+    queryBuilder.select(fields);
+  }
+  if (dbQuery.sort) {
+    const sortBy = dbQuery.sort.split(',').join(' ');
+    queryBuilder.sort(sortBy);
+  }
+
+  // Pagination
+  const page = parseInt(dbQuery.page, 10) || 1;
+  const limit = parseInt(dbQuery.limit, 10) || 25;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Bootcamp.countDocuments();
+  
+  queryBuilder.skip(startIndex).limit(limit);
+
+  // Execute query
+  const bootcamps = await queryBuilder;
+
+  // Pagination result
+  let pagination = {};
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit
+    }
+  }
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit
+    }
+  }
+
   if (bootcamps.length < 1) {
     return next(
       new ErrorResponse(`Database empty`, 404)
@@ -18,6 +61,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     msg: `Showing all bootcamps`,
+    pagination,
     count: bootcamps.length,
     data: bootcamps
   })
