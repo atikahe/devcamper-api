@@ -1,7 +1,9 @@
 const fs = require('fs');
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const colors = require('colors');
+const connectDB = require('./src/config/db');
+
+console.log('Seeder running..'.yellow)
 
 // Load env vars
 dotenv.config({ path: `${__dirname}/src/config/config.env`});
@@ -9,46 +11,53 @@ dotenv.config({ path: `${__dirname}/src/config/config.env`});
 // Load models
 const Bootcamp = require('./src/models/Bootcamp');
 
-// Connect to DB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true
-});
-
 // Read JSON files
-const bootcamps = JSON.parse(
-  fs.readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8')
-)
+const fetchJsonData = () => {
+  console.log('Fetching json..');
+  const bootcamps = JSON.parse(
+    fs.readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8')
+  )
+  if (bootcamps) console.log('Fetch completed'.cyan);
+  return bootcamps;
+}
 
 // Import into DB
-const importData = async () => {
-  try {
-    await Bootcamp.create(bootcamps);
+const importData = async (data) => {
+  console.log('Import data starting..');
+  await Bootcamp.create(data);
 
-    console.log('Data imported..'.green.inverse);
-    process.exit();
-  } catch (err) {
-    console.error(err);
-  }
+  console.log('Data imported'.cyan);
 }
 
 // Delete from DB
 const deleteData = async () => {
-  try {
-    await Bootcamp.deleteMany();
+  console.log('Delete data starting..');
+  await Bootcamp.deleteMany();
 
-    console.log('Data deleted..'.red.inverse);
-    process.exit();
-  } catch(err) {
-    console.error(err);
-  }
+  console.log('Data deleted'.red);
 }
 
 // Create cli arguments
 if (process.argv[2] === '-import') {
-  importData();
+  console.log('Connecting to database..');
+  connectDB()
+    .then(fetchJsonData)
+    .then(data => importData(data))
+    .then(() => process.exit())
+    .catch((e) => {
+      console.error(e);
+      process.exit();
+    })
 } else if (process.argv[2] === '-delete') {
-  deleteData();
+  console.log('Connecting to database..');
+  connectDB()
+    .then(deleteData)
+    .then(() => process.exit())
+    .catch((e) => {
+      console.error(e);
+      process.exit();
+    })
+} else {
+  console.log('Command not available'.red);
+  process.exit();
 }
