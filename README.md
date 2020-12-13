@@ -50,9 +50,10 @@ npm run dev
   - [x] Geospatial Query in Mongodb
   - [x] Filtering & Sorting
   - [x] Pagination
-  - [ ] Controller & Routes for Courses
+  - [x] Controller & Routes for Courses
   - [x] Database for Courses
-  - [ ] Populate, virtuals, cascade, & delete
+  - [x] Populate, virtuals, cascade, & delete
+  - [ ] Courses CRUD functionality
   - [ ] Aggregation (calculating average cost)
   - [ ] Photo upload
   - [ ] Advanced results middleware
