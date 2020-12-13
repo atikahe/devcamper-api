@@ -135,7 +135,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
  * @access Private
  */
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.deleteOne({ _id: req.params.id });
+  const bootcamp = await Bootcamp.findOne({ _id: req.params.id });
 
   if (bootcamp.deletedCount < 1) {
     return next(
@@ -143,9 +143,10 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     );
   }
 
+  bootcamp.remove();
   res.status(200).json({
     success: true,
-    msg: `Resource found, ${bootcamp.deletedCount} data is deleted`
+    msg: `Resource deleted`
   });
 });
 
