@@ -14,6 +14,7 @@ connectDB();
 
 // Load route files
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
 
 // Body parser middleware
 app.use(express.json());
@@ -25,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Mount routes
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 // Error handling middleware
 app.use(errorHandler);
