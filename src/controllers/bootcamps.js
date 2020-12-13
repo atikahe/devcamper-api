@@ -10,33 +10,36 @@ const { parseQuery } = require('../utils/helpers');
  * @access public
  */
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const { dbFilter, dbQuery } = parseQuery(req.query);
+  const { mongoFilter, mongoQuery } = parseQuery(req.query);
 
   // TODO: Practice preventing NoSQL injection
 
   // Initiate query builder with filter
-  let queryBuilder = Bootcamp.find(dbFilter);
+  let query = Bootcamp.find(mongoFilter);
 
-  if (dbQuery.select) {
-    const fields = dbQuery.select.split(',').join(' ');
-    queryBuilder.select(fields);
+  if (mongoQuery.select) {
+    const fields = mongoQuery.select.split(',').join(' ');
+    query.select(fields);
   }
-  if (dbQuery.sort) {
-    const sortBy = dbQuery.sort.split(',').join(' ');
-    queryBuilder.sort(sortBy);
+  if (mongoQuery.sort) {
+    const sortBy = mongoQuery.sort.split(',').join(' ');
+    query.sort(sortBy);
   }
 
   // Pagination
-  const page = parseInt(dbQuery.page, 10) || 1;
-  const limit = parseInt(dbQuery.limit, 10) || 25;
+  const page = parseInt(mongoQuery.page, 10) || 1;
+  const limit = parseInt(mongoQuery.limit, 10) || 25;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const total = await Bootcamp.countDocuments();
   
-  queryBuilder.skip(startIndex).limit(limit);
+  query.skip(startIndex).limit(limit);
 
   // Execute query
-  const bootcamps = await queryBuilder;
+  const bootcamps = await query.populate({
+    path: 'courses',
+    select: 'title description'
+  });
 
   // Pagination result
   let pagination = {};

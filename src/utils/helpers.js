@@ -1,15 +1,15 @@
-// Regex for MongoDB operators
+// Regex for Mongomongo operators
 const mongoOpsRegex = /\b(gt|gte|lg|lte|in)\b/g;
 
 exports.parseQuery = (query) => {
-  let dbQuery = {};
+  let mongoQuery = {};
 
-  const dbQueryKeyword = ['select', 'sort', 'limit', 'page'];
+  const mongoQueryKeyword = ['select', 'sort', 'limit', 'page'];
 
-  // Extract 'select' & 'sort' keyword from query
-  dbQueryKeyword.forEach(keyword => {
+  // Extract mongoose keyword from query
+  mongoQueryKeyword.forEach(keyword => {
     if (query[keyword]) {
-      dbQuery[keyword] = query[keyword];
+      mongoQuery[keyword] = query[keyword];
       delete query[keyword];
     }
   });
@@ -24,13 +24,13 @@ exports.parseQuery = (query) => {
   );
 
   // Parse query back to JSON and send back 
-  // as filter for database
-  const dbFilter = JSON.parse(queryString);
+  // as filter for mongoose
+  const mongoFilter = JSON.parse(queryString);
 
   const parsedQuery = {
-    dbFilter,
-    dbQuery
+    mongoFilter,
+    mongoQuery
   }
-  
+
   return parsedQuery;
 }
