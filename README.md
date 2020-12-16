@@ -52,8 +52,8 @@ npm run dev
   - [x] Pagination
   - [x] Controller & Routes for Courses
   - [x] Database for Courses
-  - [x] Populate, virtuals, cascade, & delete
-  - [ ] Courses CRUD functionality
+  - [x] Populate, virtuals, cascade & delete
+  - [x] Courses CRUD functionality
   - [ ] Aggregation (calculating average cost)
   - [ ] Photo upload
   - [ ] Advanced results middleware
