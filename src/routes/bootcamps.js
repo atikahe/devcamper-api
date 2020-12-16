@@ -17,7 +17,6 @@ const courseRouter = require('./courses');
 // Re-route into other resource
 router.use('/:bootcampId/courses', courseRouter);
 
-
 router
   .route('/')
   .get(getBootcamps)

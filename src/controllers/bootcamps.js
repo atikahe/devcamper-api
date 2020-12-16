@@ -137,7 +137,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findOne({ _id: req.params.id });
 
-  if (bootcamp.deletedCount < 1) {
+  if (bootcamp < 1) {
     return next(
       new ErrorResponse(`Deletion failed, resource not found`, 400)
     );
