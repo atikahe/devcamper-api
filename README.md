@@ -1,6 +1,6 @@
 # Devcamper API Backend
 
-Create the backend for a bootcamp directory website following udemy course by Brad Traversy.
+Create the backend for a bootcamp directory website following udemy course on NodeJS Masterclass.
 
 ## Usage
 
@@ -25,27 +25,27 @@ npm run dev
 
 5. Application is now available in port 5000
 
-## Course Section & Progres
+## Development Phase and Progress
 
-- [x] Section 1
+- [x] Phase 1
   - [x] Environment Setup
-- [x] Section 2
+- [x] Phase 2
   - [x] Dependency Setup
-- [x] Section 3
-  - [x] Create basic express server
-  - [x] Create controller
+- [x] Phase 3
+  - [x] Setup basic express server
+  - [x] Setup controller
   - [x] Middleware setup
-- [x] Section 4
+- [x] Phase 4
   - [x] Setup MongoDB database
   - [x] Configure Model for Bootcamp database
   - [x] Basic CRUD functionality
-- [x] Section 5
+- [x] Phase 5
   - [x] Error handler middleware & custom ErrorResponse Class
   - [x] Async/Await middleware
-  - [x] Mongoose middleware
+  - [x] Use mongoose middleware
   - [x] Slugify
   - [x] Geolocation
-- [x] Section 6
+- [x] Phase 6
   - [x] Bootcamps database seeder
   - [x] Geospatial Query in Mongodb
   - [x] Filtering & Sorting
@@ -54,11 +54,17 @@ npm run dev
   - [x] Database for Courses
   - [x] Populate, virtuals, cascade & delete
   - [x] Courses CRUD functionality
-  - [ ] Aggregation (calculating average cost)
+  - [x] Aggregation (calculating average cost)
   - [ ] Photo upload
-  - [ ] Advanced results middleware
-- [ ] Section 7
-- [ ] Section 8
-- [ ] Section 9
-- [ ] Section 10
-- [ ] Section 11
+  - [x] Advanced results middleware
+- [ ] Phase 7
+  - [x] User model
+  - [x] User password encryption
+  - [ ] Sign & Get JWT
+  - [ ] User login & send token in cookie
+  - [ ] Protect routes with middleware
+  - [ ] Role authorization
+- [ ] Phase 8
+- [ ] Phase 9
+- [ ] Phase 10
+- [ ] Phase 11
