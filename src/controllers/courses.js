@@ -10,28 +10,21 @@ const Bootcamp = require('../models/Bootcamp');
  * @access Public
  */
 exports.getCourses = asyncHandler(async (req, res, next) => {
-  let query;
-
+  // Ignore advanced result if bootcampId exists
   if (req.params.bootcampId) {
-    query = Course.find({ bootcamp: req.params.bootcampId });
-  } else {
-    query = Course.find();
+    const courses = await Course.find({ bootcamp: req.params.bootcampId });
+    return res.status(200).json({
+      success: true,
+      count: courses.length,
+      data: courses
+    })
   }
 
-  const courses = await query.populate({
-    path: 'bootcamp',
-    select: 'name'
-  });
-
-  if (!courses) {
-    next(ErrorResponse('Courses not found', 404));
+  if (res.advancedResults.count < 1) {
+    return next(new ErrorResponse('Courses not found', 404));
   }
 
-  res.status(200).json({
-    success: true,
-    count: courses.length,
-    data: courses
-  });
+  res.status(200).json(res.advancedResults);
 });
 
 /**
@@ -46,7 +39,7 @@ exports.getCourseById = asyncHandler(async (req, res, next) => {
   });
 
   if (!course) {
-    next(
+    return next(
       new ErrorResponse(`Course with id ${req.params.id} not found`, 404)
     );
   }

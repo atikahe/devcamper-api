@@ -11,6 +11,9 @@ const {
   getBootcampsInRadius
 } = require('../controllers/bootcamps');
 
+const advancedResults = require('../middleware/advancedResults');
+const Bootcamp = require('../models/Bootcamp');
+
 // Include other resource routers
 const courseRouter = require('./courses');
 
@@ -19,7 +22,13 @@ router.use('/:bootcampId/courses', courseRouter);
 
 router
   .route('/')
-  .get(getBootcamps)
+  .get(
+    advancedResults(Bootcamp, {
+      path: 'courses',
+      select: 'title description'
+    }),
+    getBootcamps
+  )
   .post(createBootcamp);
 
 router

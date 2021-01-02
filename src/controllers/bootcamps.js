@@ -2,7 +2,7 @@ const Bootcamp = require('../models/Bootcamp');
 const ErrorResponse = require('../utils/errorResponse');
 const geocoder = require('../utils/geocoder');
 const asyncHandler = require('../middleware/async');
-const { parseQuery } = require('../utils/helpers');
+// const { parseQuery } = require('../utils/helpers');
 
 /**
  * @description Get all bootcamps
@@ -10,64 +10,20 @@ const { parseQuery } = require('../utils/helpers');
  * @access public
  */
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const { mongoFilter, mongoQuery } = parseQuery(req.query);
-
-  // TODO: Practice preventing NoSQL injection
-
-  // Initiate query builder with filter
-  let query = Bootcamp.find(mongoFilter);
-
-  if (mongoQuery.select) {
-    const fields = mongoQuery.select.split(',').join(' ');
-    query.select(fields);
-  }
-  if (mongoQuery.sort) {
-    const sortBy = mongoQuery.sort.split(',').join(' ');
-    query.sort(sortBy);
-  }
-
-  // Pagination
-  const page = parseInt(mongoQuery.page, 10) || 1;
-  const limit = parseInt(mongoQuery.limit, 10) || 25;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const total = await Bootcamp.countDocuments();
-  
-  query.skip(startIndex).limit(limit);
-
-  // Execute query
-  const bootcamps = await query.populate({
-    path: 'courses',
-    select: 'title description'
-  });
-
-  // Pagination result
-  let pagination = {};
-  if (endIndex < total) {
-    pagination.next = {
-      page: page + 1,
-      limit
-    }
-  }
-  if (startIndex > 0) {
-    pagination.prev = {
-      page: page - 1,
-      limit
-    }
-  }
-
-  if (bootcamps.length < 1) {
+  if (res.advancedResults.count < 1) {
     return next(
       new ErrorResponse(`Database empty`, 404)
     )
   }
-  res.status(200).json({
-    success: true,
-    msg: `Showing all bootcamps`,
-    pagination,
-    count: bootcamps.length,
-    data: bootcamps
-  })
+
+  res.status(200).json(res.advancedResults);
+  // res.status(200).json({
+  //   success: true,
+  //   msg: `Showing all bootcamps`,
+  //   pagination,
+  //   count: bootcamps.length,
+  //   data: bootcamps
+  // })
 });
 
 /**
@@ -76,7 +32,10 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
  * @access Public
  */
 exports.getBootcampById = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findOne({ _id: req.params.id });
+  const bootcamp = await Bootcamp.findOne({ _id: req.params.id }).populate({
+    path: 'courses',
+    select: 'title description'
+  });
 
   if (!bootcamp) {
     return next(
