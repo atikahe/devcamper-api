@@ -57,13 +57,13 @@ npm run dev
   - [x] Aggregation (calculating average cost)
   - [ ] Photo upload
   - [x] Advanced results middleware
-- [ ] Phase 7
+- [x] Phase 7
   - [x] User model
   - [x] User password encryption
-  - [ ] Sign & Get JWT
-  - [ ] User login & send token in cookie
-  - [ ] Protect routes with middleware
-  - [ ] Role authorization
+  - [x] Sign & Get JWT
+  - [x] User login & send token in cookie
+  - [x] Protect routes with middleware
+  - [x] Role authorization
 - [ ] Phase 8
 - [ ] Phase 9
 - [ ] Phase 10
