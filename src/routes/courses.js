@@ -5,7 +5,7 @@ const router = express.Router({ mergeParams: true });
 const { 
   getCourses,
   getCourseById,
-  createCourse,
+  addCourse ,
   updateCourse,
   deleteCourse
 } = require('../controllers/courses');
@@ -13,7 +13,7 @@ const {
 router
   .route('/')
   .get(getCourses)
-  .post(createCourse)
+  .post(addCourse)
 
 router
   .route('/:id')
