@@ -1,4 +1,4 @@
-// Regex for Mongomongo operators
+// Regex for Mongo operators
 const mongoOpsRegex = /\b(gt|gte|lg|lte|in)\b/g;
 
 exports.parseQuery = (query) => {
