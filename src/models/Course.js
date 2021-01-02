@@ -62,12 +62,12 @@ CourseSchema.statics.getAverageCost = async function(bootcampId) {
 }
 
 // Calculate average cost after save
-CourseSchema.post('save', function async() {
+CourseSchema.post('save', async function() {
   this.constructor.getAverageCost(this.bootcamp);
 })
 
 // Calculate avergae cost before delete
-CourseSchema.pre('remove', function async() {
+CourseSchema.pre('remove', async function() {
   this.constructor.getAverageCost(this.bootcamp);
 })
 
