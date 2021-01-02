@@ -11,8 +11,9 @@ const {
   getBootcampsInRadius
 } = require('../controllers/bootcamps');
 
-const advancedResults = require('../middleware/advancedResults');
 const Bootcamp = require('../models/Bootcamp');
+const advancedResults = require('../middleware/advancedResults');
+const { protect, authorize } = require('../middleware/auth');
 
 // Include other resource routers
 const courseRouter = require('./courses');
@@ -29,13 +30,13 @@ router
     }),
     getBootcamps
   )
-  .post(createBootcamp);
+  .post(protect, authorize('admin', 'publisher'), createBootcamp);
 
 router
   .route('/:id')
   .get(getBootcampById)
-  .put(updateBootcamp)
-  .delete(deleteBootcamp);
+  .put(protect, authorize('admin', 'publisher'), updateBootcamp)
+  .delete(protect, authorize('admin', 'publisher'), deleteBootcamp);
 
 router
   .route('/radius/:zipcode/:distance')
