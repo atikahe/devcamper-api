@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
@@ -19,7 +20,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
      type: String,
-     enum: ['user', 'published'],
+     enum: ['user', 'publisher'],
      default: 'user'
   },
   password: {
@@ -42,6 +43,18 @@ UserSchema.pre('save', async function(next){
   this.password = await bcrypt.hash(this.password, salt);
   console.log(this.password);
   next();
-})
+});
+
+// Method to sign and get token
+UserSchema.methods.generateSignedToken = function(){
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  })
+};
+
+// Match user entered password to hashed password
+UserSchema.methods.matchPassword = async function(enteredPassword){
+  return await bcrypt.compare(enteredPassword, this.password);
+}
 
 module.exports = mongoose.model('User', UserSchema);
