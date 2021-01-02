@@ -27,7 +27,6 @@ const fetchJsonData = () => {
     data.push(bootcamps);
     data.push(courses);
   }
-  // console.log('data', data);
   return data;
 }
 
@@ -36,7 +35,6 @@ const importData = async (data) => {
   console.log('Import data starting..');
   await Bootcamp.create(data[0]);
   await Course.create(data[1]);
-  console.log('Data imported'.cyan.inverse);
 }
 
 // Delete from DB
@@ -44,29 +42,34 @@ const deleteData = async () => {
   console.log('Delete data starting..');
   await Bootcamp.deleteMany();
   await Course.deleteMany();
-  console.log('Data destroyed'.red.inverse);
 }
 
 // Create cli arguments
 if (process.argv[2] === '-import') {
   console.log('Connecting to database..');
   connectDB()
-    .then(fetchJsonData)
-    .then(data => importData(data))
-    .then(() => process.exit())
-    .catch((e) => {
-      console.error(e);
-      process.exit();
-    })
+  .then(fetchJsonData)
+  .then(data => importData(data))
+  .then(() => {
+    console.log('Data imported'.cyan.inverse);
+    process.exit();
+  })
+  .catch((e) => {
+    console.error(e);
+    process.exit();
+  })
 } else if (process.argv[2] === '-delete') {
   console.log('Connecting to database..');
   connectDB()
-    .then(deleteData)
-    .then(() => process.exit())
-    .catch((e) => {
-      console.error(e);
-      process.exit();
-    })
+  .then(deleteData)
+  .then(() => {
+    console.log('Data destroyed'.red.inverse);
+    process.exit()
+  })
+  .catch((e) => {
+    console.error(e);
+    process.exit();
+  })
 } else {
   console.log('Command not available'.red);
   process.exit();
