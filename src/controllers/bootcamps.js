@@ -11,9 +11,7 @@ const asyncHandler = require('../middleware/async');
  */
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
   if (res.advancedResults.count < 1) {
-    return next(
-      new ErrorResponse(`Database empty`, 404)
-    )
+    return next(new ErrorResponse(`Database empty`, 404));
   }
 
   res.status(200).json(res.advancedResults);
@@ -34,19 +32,19 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcampById = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findOne({ _id: req.params.id }).populate({
     path: 'courses',
-    select: 'title description'
+    select: 'title description',
   });
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404),
     );
   }
 
   res.status(200).json({
     success: true,
     msg: `Showing data of ${bootcamp.name}`,
-    data: bootcamp
+    data: bootcamp,
   });
 });
 
@@ -60,8 +58,8 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     success: true,
     msg: `New data of ${bootcamp.name} is created`,
-    data: bootcamp
-  })
+    data: bootcamp,
+  });
 });
 
 /**
@@ -72,19 +70,19 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 400)
+      new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 400),
     );
   }
 
   res.status(200).json({
     success: true,
     msg: `${bootcamp.name} data is updated!`,
-    data: bootcamp
+    data: bootcamp,
   });
 });
 
@@ -97,15 +95,13 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findOne({ _id: req.params.id });
 
   if (bootcamp < 1) {
-    return next(
-      new ErrorResponse(`Deletion failed, resource not found`, 400)
-    );
+    return next(new ErrorResponse(`Deletion failed, resource not found`, 400));
   }
 
   bootcamp.remove();
   res.status(200).json({
     success: true,
-    msg: `Resource deleted`
+    msg: `Resource deleted`,
   });
 });
 
@@ -129,14 +125,14 @@ exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
   const bootcamps = await Bootcamp.find({
     location: {
       $geoWithin: {
-        $centerSphere: [[longitude, latitude], radius]
-      }
-    }
+        $centerSphere: [[longitude, latitude], radius],
+      },
+    },
   });
 
   res.status(200).json({
     success: true,
     count: bootcamps.length,
-    data: bootcamps
-  })
+    data: bootcamps,
+  });
 });

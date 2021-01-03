@@ -7,7 +7,7 @@ exports.parseQuery = (query) => {
   const mongoQueryKeyword = ['select', 'sort', 'limit', 'page'];
 
   // Extract mongoose keyword from query
-  mongoQueryKeyword.forEach(keyword => {
+  mongoQueryKeyword.forEach((keyword) => {
     if (query[keyword]) {
       mongoQuery[keyword] = query[keyword];
       delete query[keyword];
@@ -18,19 +18,16 @@ exports.parseQuery = (query) => {
   let queryString = JSON.stringify(query);
 
   // Create operators ($gte, $lte, etc..)
-  queryString = queryString.replace(
-    mongoOpsRegex, 
-    match => `$${match}`
-  );
+  queryString = queryString.replace(mongoOpsRegex, (match) => `$${match}`);
 
-  // Parse query back to JSON and send back 
+  // Parse query back to JSON and send back
   // as filter for mongoose
   const mongoFilter = JSON.parse(queryString);
 
   const parsedQuery = {
     mongoFilter,
-    mongoQuery
-  }
+    mongoQuery,
+  };
 
   return parsedQuery;
-}
+};

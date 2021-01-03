@@ -4,8 +4,8 @@ const options = {
   provider: process.env.GEOCODER_PROVIDER,
   apiKey: process.env.GEOCODER_API_KEY,
   httpAdapter: 'http',
-  formatter: null
-}
+  formatter: null,
+};
 
 const geocoder = NodeGeocoder(options);
 

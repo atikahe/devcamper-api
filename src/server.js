@@ -5,6 +5,7 @@ const colors = require('colors');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
+
 const app = express();
 
 // Load env vars
@@ -40,15 +41,16 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(
-  PORT, 
+  PORT,
   console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.bold.yellow
-  )
-)
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.bold
+      .yellow,
+  ),
+);
 
 // Handle promise rejection
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`.red);
   // Close server and exit process
   server.close(() => process.exit(1));
-})
+});

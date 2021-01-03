@@ -1,14 +1,13 @@
 const express = require('express');
-const router = express.Router();
 
 // Load controllers
-const { 
+const {
   getBootcamps,
   getBootcampById,
   createBootcamp,
   updateBootcamp,
   deleteBootcamp,
-  getBootcampsInRadius
+  getBootcampsInRadius,
 } = require('../controllers/bootcamps');
 
 const Bootcamp = require('../models/Bootcamp');
@@ -18,6 +17,8 @@ const { protect, authorize } = require('../middleware/auth');
 // Include other resource routers
 const courseRouter = require('./courses');
 
+const router = express.Router();
+
 // Re-route into other resource
 router.use('/:bootcampId/courses', courseRouter);
 
@@ -26,9 +27,9 @@ router
   .get(
     advancedResults(Bootcamp, {
       path: 'courses',
-      select: 'title description'
+      select: 'title description',
     }),
-    getBootcamps
+    getBootcamps,
   )
   .post(protect, authorize('admin', 'publisher'), createBootcamp);
 
@@ -38,8 +39,6 @@ router
   .put(protect, authorize('admin', 'publisher'), updateBootcamp)
   .delete(protect, authorize('admin', 'publisher'), deleteBootcamp);
 
-router
-  .route('/radius/:zipcode/:distance')
-  .get(getBootcampsInRadius);
+router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius);
 
 module.exports = router;

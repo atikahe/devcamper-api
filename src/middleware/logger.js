@@ -5,11 +5,13 @@ const time = new Date();
  */
 const logger = (req, res, next) => {
   const logTime = time.toDateString();
-  const logRequest = `${req.method} ${req.protocol}://${req.get('host')}${req.url}`;
+  const logRequest = `${req.method} ${req.protocol}://${req.get('host')}${
+    req.url
+  }`;
   const logResponse = `${res.statusCode}`;
 
   console.log(logTime, logRequest, logResponse);
   next();
-}
+};
 
 module.exports = logger;

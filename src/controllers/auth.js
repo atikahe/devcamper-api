@@ -1,6 +1,26 @@
+/* eslint-disable consistent-return */
 const asyncHandler = require('../middleware/async');
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
+
+// Get token from model, create cookie, and send response
+const sendTokenResponse = (user, statusCode, res) => {
+  const token = user.generateSignedToken();
+  const expiryDays = process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000;
+  const options = {
+    expires: new Date(Date.now() + expiryDays),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true;
+  }
+
+  res.status(statusCode).cookie('token', token, options).json({
+    success: true,
+    token,
+  });
+};
 
 /**
  * @description Register new user
@@ -14,7 +34,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     name,
     email,
     password,
-    role
+    role,
   });
 
   sendTokenResponse(user, 200, res);
@@ -28,7 +48,9 @@ exports.register = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return next(new ErrorResponse('Please provide with email and password', 400));
+    return next(
+      new ErrorResponse('Please provide with email and password', 400),
+    );
   }
 
   const user = await User.findOne({ email }).select('+password');
@@ -54,28 +76,6 @@ exports.getMyData = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: user
-  })
-})
-
-// Get token from model, create cookie, and send response
-const sendTokenResponse = (user, statusCode, res) => {
-  const token = user.generateSignedToken();
-  const expiryDays = process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000;
-  const options = {
-    expires: new Date(Date.now() + expiryDays),
-    httpOnly: true
-  }
-
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
-
-  res
-    .status(statusCode)
-    .cookie('token', token, options)
-    .json({
-      success: true,
-      token
-    })
-}
+    data: user,
+  });
+});

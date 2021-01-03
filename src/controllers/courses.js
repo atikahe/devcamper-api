@@ -16,8 +16,8 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: courses.length,
-      data: courses
-    })
+      data: courses,
+    });
   }
 
   if (res.advancedResults.count < 1) {
@@ -35,19 +35,19 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 exports.getCourseById = asyncHandler(async (req, res, next) => {
   const course = await Course.findOne({ _id: req.params.id }).populate({
     path: 'bootcamp',
-    select: 'name description'
+    select: 'name description',
   });
 
   if (!course) {
     return next(
-      new ErrorResponse(`Course with id ${req.params.id} not found`, 404)
+      new ErrorResponse(`Course with id ${req.params.id} not found`, 404),
     );
   }
   res.status(200).json({
     success: true,
     msg: `Showing data of ${course.title}`,
-    data: course
-  })
+    data: course,
+  });
 });
 
 /**
@@ -58,21 +58,21 @@ exports.getCourseById = asyncHandler(async (req, res, next) => {
 exports.addCourse = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.findOne({ _id: req.params.bootcampId });
 
-  if(!bootcamp) {
+  if (!bootcamp) {
     return next(
       new ErrorResponse(`No bootcamp with id ${req.params.bootcampId}`),
-      404
+      404,
     );
   }
 
   req.body.bootcamp = req.params.bootcampId;
-  const course = await Course.create(req.body)
+  const course = await Course.create(req.body);
 
   res.status(201).json({
     success: true,
     msg: `New course is added to ${bootcamp.name}`,
-    data: course
-  })
+    data: course,
+  });
 });
 
 /**
@@ -85,19 +85,19 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 
   if (!course) {
     return next(
-      new ErrorResponse(`Course not found with id ${req.params.id}`, 400)
+      new ErrorResponse(`Course not found with id ${req.params.id}`, 400),
     );
   }
 
   course = await Course.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   res.status(200).json({
     success: true,
     msg: `${course.title} data is updated!`,
-    data: course
+    data: course,
   });
 });
 
@@ -110,9 +110,7 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   const course = await Course.findOne({ _id: req.params.id });
 
   if (course < 1) {
-    return next(
-      new ErrorResponse(`Deletion failed, resource not found`, 400)
-    );
+    return next(new ErrorResponse(`Deletion failed, resource not found`, 400));
   }
 
   await course.remove();

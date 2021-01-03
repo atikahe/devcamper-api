@@ -1,6 +1,6 @@
 const { parseQuery } = require('../utils/helpers');
 
-const advancedResults = (model, populate) => (async (req, res, next) => {
+const advancedResults = (model, populate) => async (req, res, next) => {
   const { mongoFilter, mongoQuery } = parseQuery(req.query);
 
   // TODO: Practice preventing NoSQL injection
@@ -37,24 +37,24 @@ const advancedResults = (model, populate) => (async (req, res, next) => {
   if (endIndex < total) {
     pagination.next = {
       page: page + 1,
-      limit
-    }
+      limit,
+    };
   }
   if (startIndex > 0) {
     pagination.prev = {
       page: page - 1,
-      limit
-    }
+      limit,
+    };
   }
 
   res.advancedResults = {
     success: true,
     count: results.length,
     pagination,
-    data: results
+    data: results,
   };
 
   next();
-});
+};
 
 module.exports = advancedResults;
