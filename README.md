@@ -1,7 +1,7 @@
 # Devcamper API Backend
 
-Create the backend for a bootcamp directory website following udemy course on NodeJS Masterclass with some modification.
-
+Create the backend for a bootcamp directory website.
+.
 ## Usage
 
 1. Install dependency
